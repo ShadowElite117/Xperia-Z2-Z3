@@ -168,7 +168,7 @@ do_gc:
 }
 
 /*
- * Garbage collect an unreferenced, detached key
+ * Garbage collect a list of unreferenced, detached key
  */
 static noinline void key_gc_unused_key(struct key *key)
 {
@@ -213,6 +213,7 @@ static noinline void key_gc_unused_key(struct key *key)
  */
 static void key_garbage_collector(struct work_struct *work)
 {
+	static LIST_HEAD(graveyard);
 	static u8 gc_state;		/* Internal persistent state */
 #define KEY_GC_REAP_AGAIN	0x01	/* - Need another cycle */
 #define KEY_GC_REAPING_LINKS	0x02	/* - We need to reap links */
@@ -318,13 +319,20 @@ maybe_resched:
 		key_schedule_gc(new_timer);
 	}
 
-	if (unlikely(gc_state & KEY_GC_REAPING_DEAD_2)) {
-		/* Make sure everyone revalidates their keys if we marked a
-		 * bunch as being dead and make sure all keyring ex-payloads
-		 * are destroyed.
+	if (unlikely(gc_state & KEY_GC_REAPING_DEAD_2) ||
+	    !list_empty(&graveyard)) {
+		/* Make sure that all pending keyring payload destructions are
+		 * fulfilled and that people aren't now looking at dead or
+		 * dying keys that they don't have a reference upon or a link
+		 * to.
 		 */
-		kdebug("dead sync");
+		kdebug("gc sync");
 		synchronize_rcu();
+	}
+
+	if (!list_empty(&graveyard)) {
+		kdebug("gc keys");
+		key_gc_unused_keys(&graveyard);
 	}
 
 	if (unlikely(gc_state & (KEY_GC_REAPING_DEAD_1 |
@@ -361,7 +369,7 @@ found_unreferenced_key:
 	rb_erase(&key->serial_node, &key_serial_tree);
 	spin_unlock(&key_serial_lock);
 
-	key_gc_unused_key(key);
+	list_add_tail(&key->graveyard_link, &graveyard);
 	gc_state |= KEY_GC_REAP_AGAIN;
 	goto maybe_resched;
 
