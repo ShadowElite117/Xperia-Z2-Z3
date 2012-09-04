@@ -8,6 +8,7 @@
  *
  */
 
+#include <linux/timekeeper_internal.h>
 #include <linux/module.h>
 #include <linux/interrupt.h>
 #include <linux/percpu.h>
