@@ -21,6 +21,8 @@
 #include <linux/cpumask.h>
 #include <asm/div64.h>
 #include <asm/cputime.h>
+#include <linux/kernel_stat.h>
+#include <linux/sched/rt.h>
 
 #define CPUFREQ_NAME_LEN 16
 
