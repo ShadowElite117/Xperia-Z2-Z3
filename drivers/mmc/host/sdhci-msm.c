@@ -2713,6 +2713,23 @@ static int sdhci_msm_cfg_mpm_pin_wakeup(struct sdhci_host *host, unsigned mode)
 	return ret;
 }
 
+#ifdef CONFIG_MMC_SDHCI_MSM_DISABLE_HPI
+static void populate_hpi_mode(struct platform_device *pdev,
+					struct sdhci_msm_host *msm_host)
+{
+	dev_dbg(&pdev->dev,"%s: Disabling HPI mode\n", __func__);
+	return;
+}
+#else
+static void populate_hpi_mode(struct platform_device *pdev,
+					struct sdhci_msm_host *msm_host)
+{
+	msm_host->mmc->caps2 |= MMC_CAP2_STOP_REQUEST;
+	dev_dbg(&pdev->dev,"%s: Enabling HPI mode\n", __func__);
+	return;
+}
+#endif
+
 static int __devinit sdhci_msm_probe(struct platform_device *pdev)
 {
 	struct sdhci_host *host;
@@ -2995,14 +3012,17 @@ static int __devinit sdhci_msm_probe(struct platform_device *pdev)
 #ifdef CONFIG_MMC_CACHE_FEATURE
 	msm_host->mmc->caps2 |= MMC_CAP2_CACHE_CTRL;
 #endif
-	msm_host->mmc->caps2 |= MMC_CAP2_STOP_REQUEST;
 	msm_host->mmc->caps2 |= MMC_CAP2_INIT_BKOPS;
+	msm_host->mmc->caps2 |= MMC_CAP2_POWEROFF_NOTIFY;
+	msm_host->mmc->caps2 |= MMC_CAP2_CLK_SCALE;
 	msm_host->mmc->caps2 |= MMC_CAP2_ASYNC_SDIO_IRQ_4BIT_MODE;
 	msm_host->mmc->caps2 |= MMC_CAP2_CORE_PM;
 #ifdef CONFIG_MMC_AWAKE_HS200
 	msm_host->mmc->caps2 |= MMC_CAP2_AWAKE_SUPP;
 #endif
 	msm_host->mmc->pm_caps |= MMC_PM_KEEP_POWER | MMC_PM_WAKE_SDIO_IRQ;
+
+	populate_hpi_mode(pdev, msm_host);
 
 	if (msm_host->pdata->nonremovable)
 		msm_host->mmc->caps |= MMC_CAP_NONREMOVABLE;
