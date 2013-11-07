@@ -387,6 +387,12 @@
 /* 375 */	CALL(sys_setns)
 		CALL(sys_process_vm_readv)
 		CALL(sys_process_vm_writev)
+/* FEATURE_SDCARD_MEDIAEXN_SYSTEMCALL_ENCRYPTION [S] */
+		CALL(sys_set_media_property)
+/* 379 */	CALL(sys_set_media_ext)
+/* FEATURE_SDCARD_MEDIAEXN_SYSTEMCALL_ENCRYPTION [E] */
+		CALL(sys_sched_setattr)
+		CALL(sys_sched_getattr)
 #ifndef syscalls_counted
 .equ syscalls_padding, ((NR_syscalls + 3) & ~3) - NR_syscalls
 #define syscalls_counted
