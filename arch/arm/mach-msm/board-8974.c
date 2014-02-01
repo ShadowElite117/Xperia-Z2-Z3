@@ -29,6 +29,7 @@
 #include <asm/setup.h>
 #include <linux/msm_tsens.h>
 #include <linux/msm_thermal.h>
+#include <linux/persistent_ram.h>
 #include <asm/mach/map.h>
 #include <asm/hardware/gic.h>
 #include <asm/mach/map.h>
@@ -57,8 +58,12 @@
 #ifdef CONFIG_RAMDUMP_TAGS
 #include "board-rdtags.h"
 #endif
+<<<<<<< HEAD
 
 #include <linux/persistent_ram.h>
+=======
+#include "board-8974-wifi.h"
+>>>>>>> 9efef89... shinano: add last_kmsg
 #include "board-8974-console.h"
 
 static struct memtype_reserve msm8974_reserve_table[] __initdata = {
@@ -118,6 +123,7 @@ static struct platform_device lastlogs_device = {
 };
 #endif
 
+#define DEBUG_MEM_SIZE SZ_1M
 #define RDTAGS_MEM_SIZE (256 * SZ_1K)
 #define RDTAGS_MEM_DESC_SIZE (256 * SZ_1K)
 #define LAST_LOGS_OFFSET (RDTAGS_MEM_SIZE + RDTAGS_MEM_DESC_SIZE)
@@ -137,9 +143,11 @@ static void reserve_debug_memory(void)
 	struct membank *mb = &meminfo.bank[meminfo.nr_banks - 1];
 	unsigned long bank_end = mb->start + mb->size;
 	/*Base address for rdtags*/
-	unsigned long debug_mem_base = bank_end - SZ_1M;
+	unsigned long debug_mem_base = bank_end - DEBUG_MEM_SIZE;
 	/*Base address for crash logs memory*/
+#ifdef CONFIG_CRASH_LAST_LOGS
 	unsigned long lastlogs_base = debug_mem_base + LAST_LOGS_OFFSET;
+#endif
 
 	memblock_free(debug_mem_base, SZ_1M);
 	memblock_remove(debug_mem_base, SZ_1M);
@@ -172,6 +180,43 @@ static void reserve_debug_memory(void)
 }
 #endif
 
+#ifdef CONFIG_ANDROID_PERSISTENT_RAM
+#define MSM_PERSISTENT_RAM_SIZE (SZ_1M)
+#define MSM_RAM_CONSOLE_SIZE (128 * SZ_1K)
+
+static struct persistent_ram_descriptor pr_desc = {
+#ifdef CONFIG_ANDROID_RAM_CONSOLE
+	.name = "ram_console",
+	.size = MSM_RAM_CONSOLE_SIZE
+#endif
+};
+
+static struct persistent_ram msm_pram = {
+	.size = MSM_PERSISTENT_RAM_SIZE,
+	.num_descs = 1,
+	.descs = &pr_desc
+};
+
+static void reserve_persistent_ram(void)
+{
+	struct membank *mb = &meminfo.bank[meminfo.nr_banks - 1];
+	unsigned long bank_end = mb->start + mb->size;
+
+	msm_pram.start = bank_end - DEBUG_MEM_SIZE - MSM_PERSISTENT_RAM_SIZE;
+	persistent_ram_early_init(&msm_pram);
+}
+#endif
+
+#ifdef CONFIG_ANDROID_RAM_CONSOLE
+static struct platform_device ram_console_device = {
+	.name           = "ram_console",
+	.id             = -1,
+	.dev = {
+		.platform_data = &ram_console_pdata,
+	}
+};
+#endif
+
 void __init msm_8974_reserve(void)
 {
 
@@ -193,6 +238,9 @@ void __init msm_8974_reserve(void)
 		pr_info("Hardboot page reserved at 0x%X\n", start);
 	else
 		pr_err("Failed to reserve space for hardboot page at 0x%X!\n", start);
+
+#ifdef CONFIG_ANDROID_PERSISTENT_RAM
+	reserve_persistent_ram();
 #endif
 
 	reserve_info = &msm8974_reserve_info;
@@ -213,6 +261,9 @@ void __init msm8974_add_devices(void)
 #endif
 #ifdef CONFIG_CRASH_LAST_LOGS
 	platform_device_register(&lastlogs_device);
+#endif
+#ifdef CONFIG_ANDROID_RAM_CONSOLE
+	platform_device_register(&ram_console_device);
 #endif
 }
 
