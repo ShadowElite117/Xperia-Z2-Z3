@@ -24,6 +24,8 @@
 #include <linux/regulator/consumer.h>
 #ifdef CONFIG_LCD_NOTIFY
 #include <linux/lcd_notify.h>
+#ifdef CONFIG_POWERSUSPEND
+#include <linux/powersuspend.h>
 #endif
 
 #include "mdss.h"
@@ -1068,8 +1070,13 @@ static int mdss_dsi_event_handler(struct mdss_panel_data *pdata,
 
 	switch (event) {
 	case MDSS_EVENT_UNBLANK:
+<<<<<<< HEAD
 #ifdef CONFIG_LCD_NOTIFY
 		lcd_notifier_call_chain(LCD_EVENT_ON_START, NULL);
+=======
+#ifdef CONFIG_POWERSUSPEND
+		set_power_suspend_state_panel_hook(POWER_SUSPEND_INACTIVE);
+>>>>>>> a90a1eb... PowerSuspend: V1.5 Remove HYBRID Mode. as it's stuck LG MDSS!!!
 #endif
 		rc = mdss_dsi_on(pdata);
 		mdss_dsi_op_mode_config(pdata->panel_info.mipi.mode,
@@ -1099,6 +1106,10 @@ static int mdss_dsi_event_handler(struct mdss_panel_data *pdata,
 		rc = mdss_dsi_off(pdata);
 #ifdef CONFIG_LCD_NOTIFY
 		lcd_notifier_call_chain(LCD_EVENT_OFF_END, NULL);
+#endif
+
+#ifdef CONFIG_POWERSUSPEND
+		set_power_suspend_state_panel_hook(POWER_SUSPEND_ACTIVE);
 #endif
 		break;
 	case MDSS_EVENT_CONT_SPLASH_FINISH:
