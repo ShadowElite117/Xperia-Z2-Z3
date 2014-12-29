@@ -201,8 +201,6 @@ static noinline void key_gc_unused_key(struct key *key)
 	if (test_bit(KEY_FLAG_INSTANTIATED, &key->flags))
 		atomic_dec(&key->user->nikeys);
 
-	key_user_put(key->user);
-
 	kfree(key->description);
 
 #ifdef KEY_DEBUGGING
