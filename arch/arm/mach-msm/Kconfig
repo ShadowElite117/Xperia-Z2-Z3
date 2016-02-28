@@ -1942,6 +1942,13 @@ config MSM_DALRPC_TEST
 	help
 	  Exercises DAL RPC calls to QDSP6.
 
+config THUNDERPLUG_CONTROL
+	bool "Enable plugging down/up of cores based on load per core"
+	depends on SMP && HOTPLUG_CPU
+	default n
+	help
+	  This driver hotplugs cpu cores based on per-core load
+
 if CPU_FREQ_MSM
 
 config MSM_CPU_FREQ_SET_MIN_MAX

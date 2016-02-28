@@ -457,3 +457,6 @@ CFLAGS_board-rdtags.o  := \
 	-D"INFO_VARIANT= \
         \"$(if $(TARGET_BUILD_VARIANT),$(TARGET_BUILD_VARIANT),unknown)\"" \
 	-D"INFO_BUILDID=\"$(if $(SEMC_SYSTEM_VERSION),$(SEMC_SYSTEM_VERSION),private)\""
+
+obj-$(CONFIG_MSM_CPUFREQ_LIMITER) += cpufreq_limit.o
+obj-$(CONFIG_THUNDERPLUG_CONTROL) += thunderplug.o
