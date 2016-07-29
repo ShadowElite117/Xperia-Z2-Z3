@@ -1,5 +1,9 @@
 /* Copyright (c) 2012-2014, The Linux Foundation. All rights reserved.
+<<<<<<< HEAD
  * Copyright (C) 2013-2014 Sony Mobile Communications Inc.
+=======
+ * Copyright (C) 2015 Sony Mobile Communications Inc.
+>>>>>>> 1a13467... Initial Release
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -9,6 +13,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+<<<<<<< HEAD
+=======
+ *
+ * NOTE: This file has been modified by Sony Mobile Communications Inc.
+ * Modifications are Copyright (C) 2015 Sony Mobile Communications Inc.,
+ * and licensed under the license of the file.
+>>>>>>> 1a13467... Initial Release
  */
 
 #include <linux/clk.h>
@@ -49,7 +60,10 @@
 static int slim0_rx_bit_format = SNDRV_PCM_FORMAT_S16_LE;
 static int slim0_tx_bit_format = SNDRV_PCM_FORMAT_S16_LE;
 static int hdmi_rx_bit_format = SNDRV_PCM_FORMAT_S16_LE;
+<<<<<<< HEAD
 static int mi2s_rx_bit_format = SNDRV_PCM_FORMAT_S16_LE;
+=======
+>>>>>>> 1a13467... Initial Release
 
 #define SAMPLING_RATE_48KHZ 48000
 #define SAMPLING_RATE_96KHZ 96000
@@ -61,6 +75,7 @@ static int msm8974_auxpcm_rate = 8000;
 #define LO_2_SPK_AMP	0x4
 #define LO_4_SPK_AMP	0x8
 
+<<<<<<< HEAD
 
 #define MSM8974AB_MI2S_MUXSEL
 
@@ -75,6 +90,12 @@ static int msm8974_auxpcm_rate = 8000;
 #define I2S_PCM_SEL_OFFSET 1
 
 #define WCD9XXX_MBHC_DEF_BUTTONS 5
+=======
+#define I2S_PCM_SEL 1
+#define I2S_PCM_SEL_OFFSET 1
+
+#define WCD9XXX_MBHC_DEF_BUTTONS 4
+>>>>>>> 1a13467... Initial Release
 #define WCD9XXX_MBHC_DEF_RLOADS 5
 #define TAIKO_EXT_CLK_RATE 9600000
 
@@ -90,6 +111,7 @@ static int msm8974_auxpcm_rate = 8000;
 
 #define NUM_OF_AUXPCM_GPIOS 4
 
+<<<<<<< HEAD
 #define GPIO_QUAT_MI2S_SCK   58
 #define GPIO_QUAT_MI2S_WS    59
 #define GPIO_QUAT_MI2S_DATA0 60
@@ -150,6 +172,8 @@ static struct afe_clk_cfg lpass_mi2s_disable = {
 	0,
 };
 
+=======
+>>>>>>> 1a13467... Initial Release
 static void *adsp_state_notifier;
 
 #define ADSP_STATE_READY_TIMEOUT_MS 50
@@ -190,21 +214,33 @@ static struct wcd9xxx_mbhc_config mbhc_cfg = {
 	.read_fw_bin = false,
 	.calibration = NULL,
 	.micbias = MBHC_MICBIAS2,
+<<<<<<< HEAD
 	.anc_micbias = MBHC_MICBIAS3,
+=======
+>>>>>>> 1a13467... Initial Release
 	.mclk_cb_fn = msm_snd_enable_codec_ext_clk,
 	.mclk_rate = TAIKO_EXT_CLK_RATE,
 	.gpio = 0,
 	.gpio_irq = 0,
+<<<<<<< HEAD
 	.gpio_level_insert = 0,
+=======
+	.gpio_level_insert = 1,
+>>>>>>> 1a13467... Initial Release
 	.detect_extn_cable = true,
 	.micbias_enable_flags = 1 << MBHC_MICBIAS_ENABLE_THRESHOLD_HEADSET,
 	.insert_detect = true,
 	.swap_gnd_mic = NULL,
+<<<<<<< HEAD
 	.cs_enable_flags = 0,
 	.do_recalibration = true,
 	.use_vddio_meas = true,
 	.enable_anc_mic_detect = false,
 	.hw_jack_type = SIX_POLE_JACK,
+=======
+	.do_recalibration = true,
+	.use_vddio_meas = true,
+>>>>>>> 1a13467... Initial Release
 };
 
 struct msm_auxpcm_gpio {
@@ -753,7 +789,11 @@ static int msm8974_mclk_event(struct snd_soc_dapm_widget *w,
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct snd_soc_dapm_widget shinano_msm8974_dapm_widgets[] = {
+=======
+static const struct snd_soc_dapm_widget rhine_msm8974_dapm_widgets[] = {
+>>>>>>> 1a13467... Initial Release
 
 	SND_SOC_DAPM_SUPPLY("MCLK",  SND_SOC_NOPM, 0, 0,
 	msm8974_mclk_event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
@@ -1375,6 +1415,7 @@ static struct snd_soc_ops msm_sec_auxpcm_be_ops = {
 	.shutdown = msm_sec_auxpcm_shutdown,
 };
 
+<<<<<<< HEAD
 static int msm8974_configure_quat_mi2s_gpio(void)
 {
 	int ret;
@@ -1462,6 +1503,8 @@ static struct snd_soc_ops msm8974_mi2s_be_ops = {
 	.shutdown = msm8974_mi2s_shutdown
 };
 
+=======
+>>>>>>> 1a13467... Initial Release
 static int msm_slim_0_rx_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 					    struct snd_pcm_hw_params *params)
 {
@@ -1551,6 +1594,7 @@ static int msm_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 	struct snd_interval *rate = hw_param_interval(params,
 					SNDRV_PCM_HW_PARAM_RATE);
 
+<<<<<<< HEAD
 	struct snd_interval *channels =
 	    hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
 
@@ -1559,6 +1603,10 @@ static int msm_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 				   mi2s_rx_bit_format);
 	rate->min = rate->max = 48000;
 	channels->min = channels->max = 2;
+=======
+	pr_debug("%s()\n", __func__);
+	rate->min = rate->max = 48000;
+>>>>>>> 1a13467... Initial Release
 
 	return 0;
 }
@@ -1764,8 +1812,13 @@ static int msm_audrx_init(struct snd_soc_pcm_runtime *rtd)
 		return err;
 	}
 
+<<<<<<< HEAD
 	snd_soc_dapm_new_controls(dapm, shinano_msm8974_dapm_widgets,
 				ARRAY_SIZE(shinano_msm8974_dapm_widgets));
+=======
+	snd_soc_dapm_new_controls(dapm, rhine_msm8974_dapm_widgets,
+				ARRAY_SIZE(rhine_msm8974_dapm_widgets));
+>>>>>>> 1a13467... Initial Release
 
 	snd_soc_dapm_enable_pin(dapm, "Lineout_1 amp");
 	snd_soc_dapm_enable_pin(dapm, "Lineout_3 amp");
@@ -1879,8 +1932,18 @@ void *def_taiko_mbhc_cal(void)
 	S(t_ins_retry, 200);
 #undef S
 #define S(X, Y) ((WCD9XXX_MBHC_CAL_PLUG_TYPE_PTR(taiko_cal)->X) = (Y))
+<<<<<<< HEAD
 	S(v_no_mic, 50);
 	S(v_hs_max, 2550);
+=======
+#ifdef CONFIG_NOISE_DUMPING_JACK
+	S(v_no_mic, 900);
+	S(v_hs_max, 2600);
+#else
+	S(v_no_mic, 50);
+	S(v_hs_max, 2550);
+#endif
+>>>>>>> 1a13467... Initial Release
 #undef S
 #define S(X, Y) ((WCD9XXX_MBHC_CAL_BTN_DET_PTR(taiko_cal)->X) = (Y))
 	S(c[0], 62);
@@ -1899,6 +1962,7 @@ void *def_taiko_mbhc_cal(void)
 	btn_high = wcd9xxx_mbhc_cal_btn_det_mp(btn_cfg,
 					       MBHC_BTN_DET_V_BTN_HIGH);
 	btn_low[0] = -30;
+<<<<<<< HEAD
 	btn_high[0] = 106;
 	btn_low[1] = 107;
 	btn_high[1] = 202;
@@ -1908,6 +1972,25 @@ void *def_taiko_mbhc_cal(void)
 	btn_high[3] = 759;
 	btn_low[4] = 760;
 	btn_high[4] = 1207;
+=======
+#ifdef CONFIG_NOISE_DUMPING_JACK
+	btn_high[0] = 887;
+	btn_low[1] = 888;
+	btn_high[1] = 1009;
+	btn_low[2] = 1010;
+	btn_high[2] = 1189;
+	btn_low[3] = 1190;
+	btn_high[3] = 1411;
+#else
+	btn_high[0] = 50;
+	btn_low[1] = 51;
+	btn_high[1] = 336;
+	btn_low[2] = 337;
+	btn_high[2] = 680;
+	btn_low[3] = 681;
+	btn_high[3] = 1207;
+#endif
+>>>>>>> 1a13467... Initial Release
 	n_ready = wcd9xxx_mbhc_cal_btn_det_mp(btn_cfg, MBHC_BTN_DET_N_READY);
 	n_ready[0] = 80;
 	n_ready[1] = 68;
@@ -2432,6 +2515,7 @@ static struct snd_soc_dai_link msm8974_common_dai_links[] = {
 		.ignore_pmdown_time = 1,
 		.be_id = MSM_FRONTEND_DAI_MULTIMEDIA6,
 	},
+<<<<<<< HEAD
 	/* Voice Stub For Loopback */
 	{
 		.name = "Voice Stub",
@@ -2447,6 +2531,8 @@ static struct snd_soc_dai_link msm8974_common_dai_links[] = {
 		.codec_dai_name = "snd-soc-dummy-dai",
 		.codec_name = "snd-soc-dummy",
 	},
+=======
+>>>>>>> 1a13467... Initial Release
 	{
 		.name = "Listen 2 Audio Service",
 		.stream_name = "Listen 2 Audio Service",
@@ -2590,6 +2676,24 @@ static struct snd_soc_dai_link msm8974_common_dai_links[] = {
 		.ops = &msm8974_slimbus_2_be_ops,
 	},
 	{
+<<<<<<< HEAD
+=======
+		.name = "MSM8974 Media9",
+		.stream_name = "MultiMedia9",
+		.cpu_dai_name   = "MultiMedia9",
+		.platform_name  = "msm-pcm-dsp.0",
+		.dynamic = 1,
+		.trigger = {SND_SOC_DPCM_TRIGGER_POST,
+				SND_SOC_DPCM_TRIGGER_POST},
+		.codec_dai_name = "snd-soc-dummy-dai",
+		.codec_name = "snd-soc-dummy",
+		.ignore_suspend = 1,
+		/* this dainlink has playback support */
+		.ignore_pmdown_time = 1,
+		.be_id = MSM_FRONTEND_DAI_MULTIMEDIA9,
+	},
+	{
+>>>>>>> 1a13467... Initial Release
 		.name = "VoWLAN",
 		.stream_name = "VoWLAN",
 		.cpu_dai_name   = "VoWLAN",
@@ -2895,6 +2999,7 @@ static struct snd_soc_dai_link msm8974_common_dai_links[] = {
 		.be_hw_params_fixup = msm_be_hw_params_fixup,
 		.ignore_suspend = 1,
 	},
+<<<<<<< HEAD
 	/* MI2S Playback BACK END DAI Link */
 	{
 		.name = LPASS_BE_QUAT_MI2S_RX,
@@ -2921,6 +3026,8 @@ static struct snd_soc_dai_link msm8974_common_dai_links[] = {
 		.be_hw_params_fixup = msm_be_hw_params_fixup,
 		.ops = &msm8974_mi2s_be_ops,
 	},
+=======
+>>>>>>> 1a13467... Initial Release
 	/* Incall Music 2 BACK END DAI Link */
 	{
 		.name = LPASS_BE_VOICE2_PLAYBACK_TX,
@@ -2933,6 +3040,7 @@ static struct snd_soc_dai_link msm8974_common_dai_links[] = {
 		.be_id = MSM_BACKEND_DAI_VOICE2_PLAYBACK_TX,
 		.be_hw_params_fixup = msm_be_hw_params_fixup,
 		.ignore_suspend = 1,
+<<<<<<< HEAD
 	},
 	/* 61 : High-Res Audio Playback */
 	{
@@ -2966,6 +3074,9 @@ static struct snd_soc_dai_link msm8974_common_dai_links[] = {
 		.ignore_pmdown_time = 1,
 		.be_id = MSM_FRONTEND_DAI_MULTIMEDIA10,
 	},
+=======
+	}
+>>>>>>> 1a13467... Initial Release
 };
 
 static struct snd_soc_dai_link msm8974_hdmi_dai_link[] = {
@@ -3100,8 +3211,11 @@ static __devinit int msm8974_asoc_machine_probe(struct platform_device *pdev)
 	int ret;
 	const char *auxpcm_pri_gpio_set = NULL;
 	const char *prop_name_ult_lo_gpio = "qcom,ext-ult-lo-amp-gpio";
+<<<<<<< HEAD
 	const char *mbhc_audio_jack_type = NULL;
 	size_t n = strlen("4-pole-jack");
+=======
+>>>>>>> 1a13467... Initial Release
 	struct resource	*pri_muxsel;
 	struct resource	*sec_muxsel;
 
@@ -3161,6 +3275,7 @@ static __devinit int msm8974_asoc_machine_probe(struct platform_device *pdev)
 	if (ret)
 		goto err;
 
+<<<<<<< HEAD
 	ret = of_property_read_string(pdev->dev.of_node,
 		"qcom,mbhc-audio-jack-type", &mbhc_audio_jack_type);
 	if (ret) {
@@ -3189,6 +3304,8 @@ static __devinit int msm8974_asoc_machine_probe(struct platform_device *pdev)
 			dev_dbg(&pdev->dev, "Unknown value, hence setting to default");
 		}
 	}
+=======
+>>>>>>> 1a13467... Initial Release
 	if (of_property_read_bool(pdev->dev.of_node, "qcom,hdmi-audio-rx")) {
 		dev_info(&pdev->dev, "%s(): hdmi audio support present\n",
 				__func__);

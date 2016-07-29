@@ -699,6 +699,10 @@ static int msm_compr_open(struct snd_compr_stream *cstream)
 		kfree(prtd);
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1a13467... Initial Release
 	pdata->sony_hweffect[rtd->dai_link->be_id] =
 		 kzalloc(sizeof(struct msm_compr_sony_hweffect), GFP_KERNEL);
 	if (!pdata->sony_hweffect[rtd->dai_link->be_id]) {
@@ -969,11 +973,19 @@ static int msm_compr_drain_buffer(struct msm_compr_audio *prtd,
 	prtd->drain_ready = 0;
 	spin_unlock_irqrestore(&prtd->lock, *flags);
 	pr_debug("%s: wait for buffer to be drained\n",  __func__);
+<<<<<<< HEAD
 	wait_event(prtd->drain_wait,
 		prtd->drain_ready ||
 		prtd->cmd_interrupt ||
 		atomic_read(&prtd->xrun) ||
 		atomic_read(&prtd->error));
+=======
+	rc = wait_event_interruptible(prtd->drain_wait,
+					prtd->drain_ready ||
+					prtd->cmd_interrupt ||
+					atomic_read(&prtd->xrun) ||
+					atomic_read(&prtd->error));
+>>>>>>> 1a13467... Initial Release
 	pr_debug("%s: out of buffer drain wait with ret %d\n", __func__, rc);
 	spin_lock_irqsave(&prtd->lock, *flags);
 	if (prtd->cmd_interrupt) {
@@ -1858,6 +1870,10 @@ static int msm_compr_sony_hweffect_config_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1a13467... Initial Release
 static int msm_compr_dec_params_put(struct snd_kcontrol *kcontrol,
 				    struct snd_ctl_elem_value *ucontrol)
 {

@@ -413,7 +413,11 @@ int snd_pcm_plug_format_plugins(struct snd_pcm_substream *plug,
 	    ! snd_pcm_format_linear(srcformat.format)) {
 		if (srcformat.format != SNDRV_PCM_FORMAT_MU_LAW)
 			return -EINVAL;
+<<<<<<< HEAD
 		tmpformat.format = SNDRV_PCM_FORMAT_S16;
+=======
+		tmpformat.format = SNDRV_PCM_FORMAT_S24;
+>>>>>>> 1a13467... Initial Release
 		err = snd_pcm_plugin_build_mulaw(plug,
 						 &srcformat, &tmpformat,
 						 &plugin);
@@ -446,9 +450,15 @@ int snd_pcm_plug_format_plugins(struct snd_pcm_substream *plug,
 
 	/* rate resampling */
 	if (!rate_match(srcformat.rate, dstformat.rate)) {
+<<<<<<< HEAD
 		if (srcformat.format != SNDRV_PCM_FORMAT_S16) {
 			/* convert to S16 for resampling */
 			tmpformat.format = SNDRV_PCM_FORMAT_S16;
+=======
+		if (srcformat.format != SNDRV_PCM_FORMAT_S24) {
+			/* convert to S16 for resampling */
+			tmpformat.format = SNDRV_PCM_FORMAT_24;
+>>>>>>> 1a13467... Initial Release
 			err = snd_pcm_plugin_build_linear(plug,
 							  &srcformat, &tmpformat,
 							  &plugin);

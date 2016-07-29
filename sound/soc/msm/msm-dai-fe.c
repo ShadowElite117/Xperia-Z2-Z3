@@ -1,5 +1,8 @@
 /* Copyright (c) 2012-2014, The Linux Foundation. All rights reserved.
+<<<<<<< HEAD
  * Copyright (C) 2014 Sony Mobile Communications AB.
+=======
+>>>>>>> 1a13467... Initial Release
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -789,6 +792,7 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.name = "QCHAT",
 	},
 	{
+<<<<<<< HEAD
 		.playback = {
 			.stream_name = "Multimedia10 Playback",
 			.aif_name = "MM_DL10",
@@ -816,6 +820,8 @@ static struct snd_soc_dai_driver msm_fe_dais[] = {
 		.name = "MultiMedia10",
 	},
 	{
+=======
+>>>>>>> 1a13467... Initial Release
 		.capture = {
 			.stream_name = "Listen 1 Audio Service Capture",
 			.aif_name = "LSM1_UL_HL",

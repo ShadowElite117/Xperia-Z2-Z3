@@ -27,12 +27,21 @@ static const struct snd_pcm_hardware msm_pcm_hardware = {
 					SNDRV_PCM_INFO_INTERLEAVED |
 					SNDRV_PCM_INFO_PAUSE |
 					SNDRV_PCM_INFO_RESUME,
+<<<<<<< HEAD
 	.rates			=	SNDRV_PCM_RATE_8000_48000,
 	.formats		=	SNDRV_PCM_FMTBIT_S16_LE,
 	.period_bytes_min =	32,
 	.period_bytes_max =	DMASZ/4,
 	.buffer_bytes_max =	DMASZ,
 	.rate_max =	96000,
+=======
+	.rates			=	SNDRV_PCM_RATE_8000_192000,
+	.formats		=	SNDRV_PCM_FMTBIT_S16_LE | 						SNDRV_PCM_FMTBIT_S24_LE,
+	.period_bytes_min =	32,
+	.period_bytes_max =	DMASZ/4,
+	.buffer_bytes_max =	DMASZ,
+	.rate_max =	192000,
+>>>>>>> 1a13467... Initial Release
 	.rate_min =	8000,
 	.channels_min =	USE_CHANNELS_MIN,
 	.channels_max =	USE_CHANNELS_MAX,
@@ -48,7 +57,11 @@ struct msm_pcm_data {
 
 /* Conventional and unconventional sample rate supported */
 static unsigned int supported_sample_rates[] = {
+<<<<<<< HEAD
 	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000
+=======
+	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 96000, 192000
+>>>>>>> 1a13467... Initial Release
 };
 
 static struct snd_pcm_hw_constraint_list constraints_sample_rates = {

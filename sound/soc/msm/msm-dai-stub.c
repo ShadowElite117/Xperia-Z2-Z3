@@ -32,6 +32,7 @@ static struct snd_soc_dai_ops msm_dai_stub_ops = {
 
 static struct snd_soc_dai_driver msm_dai_stub_dai = {
 	.playback = {
+<<<<<<< HEAD
 		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
 			SNDRV_PCM_RATE_16000,
 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
@@ -39,6 +40,15 @@ static struct snd_soc_dai_driver msm_dai_stub_dai = {
 		.channels_max = 2,
 		.rate_min = 8000,
 		.rate_max = 48000,
+=======
+		.rates = SNDRV_PCM_RATE_192000 | SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+			SNDRV_PCM_RATE_16000,
+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE,
+		.channels_min = 1,
+		.channels_max = 2,
+		.rate_min = 8000,
+		.rate_max = 192000,
+>>>>>>> 1a13467... Initial Release
 	},
 	.capture = {
 		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
