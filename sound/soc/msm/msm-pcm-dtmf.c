@@ -81,11 +81,7 @@ static struct snd_pcm_hardware msm_pcm_hardware = {
 				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
 				 SNDRV_PCM_INFO_MMAP_VALID |
 				 SNDRV_PCM_INFO_INTERLEAVED),
-<<<<<<< HEAD
 	.formats =              SNDRV_PCM_FMTBIT_S16_LE,
-=======
-	.formats =               SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
->>>>>>> 1a13467... Initial Release
 	.channels_min =         1,
 	.channels_max =         1,
 	.buffer_bytes_max =	(sizeof(struct dtmf_buf_node) * DTMF_MAX_Q_LEN),

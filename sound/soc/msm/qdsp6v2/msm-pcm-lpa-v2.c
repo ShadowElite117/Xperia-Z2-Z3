@@ -68,15 +68,9 @@ static struct snd_pcm_hardware msm_pcm_hardware = {
 	.rate_max =             192000,
 	.channels_min =         1,
 	.channels_max =         2,
-<<<<<<< HEAD
 	.buffer_bytes_max =     1024 * 1024,
 	.period_bytes_min =	128 * 1024,
 	.period_bytes_max =     256 * 1024,
-=======
-	.buffer_bytes_max =     2048 * 2048,
-	.period_bytes_min =	128 * 2048,
-	.period_bytes_max =     256 * 2048,
->>>>>>> 1a13467... Initial Release
 	.periods_min =          4,
 	.periods_max =          8,
 	.fifo_size =            0,
