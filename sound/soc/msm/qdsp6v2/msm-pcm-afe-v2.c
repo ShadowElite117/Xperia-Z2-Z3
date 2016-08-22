@@ -8,6 +8,11 @@
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
+*
+*
+*	 PDesireAudio
+*	 Modified by Tristan Marsell <tristan.marsell@t-online.de>
+*    Enables maximal output (192kHz 24bit) and 24bit audio capture on AFE Audio Module QDSP V2
 */
 
 
@@ -43,6 +48,7 @@
 #define MIN_CAPTURE_NUM_PERIODS (4)
 #define MAX_CAPTURE_NUM_PERIODS (384)
 
+/* Enable Maximum Audio output */
 static struct snd_pcm_hardware msm_afe_hardware_playback = {
 	.info =                 (SNDRV_PCM_INFO_MMAP |
 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
@@ -52,9 +58,11 @@ static struct snd_pcm_hardware msm_afe_hardware_playback = {
 				SNDRV_PCM_FMTBIT_S24_LE,
 	.rates =                (SNDRV_PCM_RATE_8000 |
 				SNDRV_PCM_RATE_16000 |
-				SNDRV_PCM_RATE_48000),
+				SNDRV_PCM_RATE_48000 |
+				SNDRV_PCM_RATE_96000 |
+				SNDRV_PCM_RATE_192000),
 	.rate_min =             8000,
-	.rate_max =             48000,
+	.rate_max =             192000,
 	.channels_min =         1,
 	.channels_max =         6,
 	.buffer_bytes_max =     MAX_PLAYBACK_PERIOD_SIZE *
@@ -66,6 +74,7 @@ static struct snd_pcm_hardware msm_afe_hardware_playback = {
 	.fifo_size =            0,
 };
 
+/* Enable 24bit audio capture */
 static struct snd_pcm_hardware msm_afe_hardware_capture = {
 	.info =                 (SNDRV_PCM_INFO_MMAP |
 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
@@ -75,9 +84,11 @@ static struct snd_pcm_hardware msm_afe_hardware_capture = {
 				SNDRV_PCM_FMTBIT_S24_LE,
 	.rates =                (SNDRV_PCM_RATE_8000 |
 				SNDRV_PCM_RATE_16000 |
-				SNDRV_PCM_RATE_48000),
+				SNDRV_PCM_RATE_48000 |
+				SNDRV_PCM_RATE_96000 |
+				SNDRV_PCM_RATE_192000),
 	.rate_min =             8000,
-	.rate_max =             48000,
+	.rate_max =             192000,
 	.channels_min =         1,
 	.channels_max =         6,
 	.buffer_bytes_max =     MAX_CAPTURE_PERIOD_SIZE *

@@ -25,7 +25,7 @@
 
 /* Support unconventional sample rates 12000, 24000 as well */
 #define USE_RATE                \
-			(SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_KNOT)
+			(SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATE_KNOT)
 
 extern int copy_count;
 

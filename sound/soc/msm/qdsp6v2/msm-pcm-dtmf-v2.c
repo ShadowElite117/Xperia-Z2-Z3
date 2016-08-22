@@ -8,6 +8,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+ *
+ *
+ *	 PDesireAudio
+ *	 Modified by Tristan Marsell <tristan.marsell@t-online.de>
+ *   Enables maximal output (SAMPLERATE UNCHANGED 24bit) on DTMF Audio Module QDSP V2
  */
 
 #include <linux/init.h>
@@ -81,7 +86,8 @@ static struct snd_pcm_hardware msm_pcm_hardware = {
 				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
 				 SNDRV_PCM_INFO_MMAP_VALID |
 				 SNDRV_PCM_INFO_INTERLEAVED),
-	.formats =              SNDRV_PCM_FMTBIT_S16_LE,
+							/* Enable Maximum Audio output */
+	.formats =              SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
 	.channels_min =         1,
 	.channels_max =         1,
 	.buffer_bytes_max =	(sizeof(struct dtmf_buf_node) * DTMF_MAX_Q_LEN),

@@ -8,6 +8,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+ *
+ *
+ *	 PDesireAudio
+ *	 Modified by Tristan Marsell <tristan.marsell@t-online.de>
+ *   Patches and enables 24bit audio recording and playback on TABLA_FORMATS
+ *	 EXPERIMENTAL STATE
  */
 #include <linux/module.h>
 #include <linux/init.h>
@@ -244,7 +250,6 @@ static const struct comp_dgtl_gain_offset
 	{16, 1},
 	{18, 0},
 };
-
 /* Data used by MBHC */
 struct mbhc_internal_cal_data {
 	u16 dce_z;
@@ -252,6 +257,7 @@ struct mbhc_internal_cal_data {
 	u16 sta_z;
 	u16 sta_mb;
 	u32 t_sta_dce;
+
 	u32 t_dce;
 	u32 t_sta;
 	u32 micb_mv;
@@ -2183,7 +2189,53 @@ static const struct snd_kcontrol_new slim_rx_mux[TABLA_RX_MAX] = {
 			  slim_rx_mux_get, slim_rx_mux_put),
 };
 
-static const struct snd_kcontrol_new aif_cap_mixer[] = {
+static const struct snd_kcontrol_new aif1_cap_mixer[] = {
+	SOC_SINGLE_EXT("SLIM TX1", SND_SOC_NOPM, TABLA_TX1, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX2", SND_SOC_NOPM, TABLA_TX2, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX3", SND_SOC_NOPM, TABLA_TX3, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX4", SND_SOC_NOPM, TABLA_TX4, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX5", SND_SOC_NOPM, TABLA_TX5, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX6", SND_SOC_NOPM, TABLA_TX6, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX7", SND_SOC_NOPM, TABLA_TX7, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX8", SND_SOC_NOPM, TABLA_TX8, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX9", SND_SOC_NOPM, TABLA_TX9, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX10", SND_SOC_NOPM, TABLA_TX10, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+};
+
+static const struct snd_kcontrol_new aif2_cap_mixer[] = {
+	SOC_SINGLE_EXT("SLIM TX1", SND_SOC_NOPM, TABLA_TX1, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX2", SND_SOC_NOPM, TABLA_TX2, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX3", SND_SOC_NOPM, TABLA_TX3, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX4", SND_SOC_NOPM, TABLA_TX4, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX5", SND_SOC_NOPM, TABLA_TX5, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX6", SND_SOC_NOPM, TABLA_TX6, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX7", SND_SOC_NOPM, TABLA_TX7, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX8", SND_SOC_NOPM, TABLA_TX8, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX9", SND_SOC_NOPM, TABLA_TX9, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+	SOC_SINGLE_EXT("SLIM TX10", SND_SOC_NOPM, TABLA_TX10, 1, 0,
+			slim_tx_mixer_get, slim_tx_mixer_put),
+};
+
+static const struct snd_kcontrol_new aif3_cap_mixer[] = {
 	SOC_SINGLE_EXT("SLIM TX1", SND_SOC_NOPM, TABLA_TX1, 1, 0,
 			slim_tx_mixer_get, slim_tx_mixer_put),
 	SOC_SINGLE_EXT("SLIM TX2", SND_SOC_NOPM, TABLA_TX2, 1, 0,
@@ -2639,31 +2691,17 @@ static int tabla_codec_enable_dmic(struct snd_soc_dapm_widget *w,
 	case SND_SOC_DAPM_PRE_PMU:
 
 		(*dmic_clk_cnt)++;
-		if (*dmic_clk_cnt == 1) {
-			snd_soc_update_bits(codec,
-					TABLA_A_CDC_DMIC_CLK0_MODE, 0x7, 0x0);
-			snd_soc_update_bits(codec,
-					TABLA_A_CDC_DMIC_CLK1_MODE, 0x7, 0x0);
-			snd_soc_update_bits(codec,
-					TABLA_A_CDC_DMIC_CLK2_MODE, 0x7, 0x0);
+		if (*dmic_clk_cnt == 1)
 			snd_soc_update_bits(codec, TABLA_A_CDC_CLK_DMIC_CTL,
 					dmic_clk_en, dmic_clk_en);
-		}
 
 		break;
 	case SND_SOC_DAPM_POST_PMD:
 
 		(*dmic_clk_cnt)--;
-		if (*dmic_clk_cnt  == 0) {
+		if (*dmic_clk_cnt  == 0)
 			snd_soc_update_bits(codec, TABLA_A_CDC_CLK_DMIC_CTL,
 					dmic_clk_en, 0);
-			snd_soc_update_bits(codec,
-					TABLA_A_CDC_DMIC_CLK0_MODE, 0x7, 0x4);
-			snd_soc_update_bits(codec,
-					TABLA_A_CDC_DMIC_CLK1_MODE, 0x7, 0x4);
-			snd_soc_update_bits(codec,
-					TABLA_A_CDC_DMIC_CLK2_MODE, 0x7, 0x4);
-		}
 		break;
 	}
 	return 0;
@@ -4436,11 +4474,15 @@ static int tabla_volatile(struct snd_soc_codec *ssc, unsigned int reg)
 	return 0;
 }
 
-#define TABLA_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
+/* WARNING, EXPERIMENTAL STATUS OF 24BIT */
+/* CHANGED FORMAT TO FMTBIT TO PATCH 24bit AUDIO */
+#define TABLA_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
+			SNDRV_PCM_FMTBIT_S24_LE)
 static int tabla_write(struct snd_soc_codec *codec, unsigned int reg,
 	unsigned int value)
 {
 	int ret;
+	struct wcd9xxx *wcd9xxx = codec->control_data;
 
 	if (reg == SND_SOC_NOPM)
 		return 0;
@@ -4454,13 +4496,14 @@ static int tabla_write(struct snd_soc_codec *codec, unsigned int reg,
 				reg, ret);
 	}
 
-	return wcd9xxx_reg_write(codec->control_data, reg, value);
+	return wcd9xxx_reg_write(&wcd9xxx->core_res, reg, value);
 }
 static unsigned int tabla_read(struct snd_soc_codec *codec,
 				unsigned int reg)
 {
 	unsigned int val;
 	int ret;
+	struct wcd9xxx *wcd9xxx = codec->control_data;
 
 	if (reg == SND_SOC_NOPM)
 		return 0;
@@ -4477,7 +4520,7 @@ static unsigned int tabla_read(struct snd_soc_codec *codec,
 				reg, ret);
 	}
 
-	val = wcd9xxx_reg_read(codec->control_data, reg);
+	val = wcd9xxx_reg_read(&wcd9xxx->core_res, reg);
 	return val;
 }
 
@@ -5138,20 +5181,6 @@ static struct snd_soc_dai_driver tabla_dai[] = {
 		.ops = &tabla_dai_ops,
 	},
 	{
-		.name = "tabla_tx3",
-		.id = AIF3_CAP,
-		.capture = {
-			.stream_name = "AIF3 Capture",
-			.rates = WCD9310_RATES,
-			.formats = TABLA_FORMATS,
-			.rate_max = 48000,
-			.rate_min = 8000,
-			.channels_min = 1,
-			.channels_max = 2,
-		},
-		.ops = &tabla_dai_ops,
-	},
-	{
 		.name = "tabla_rx3",
 		.id = AIF3_PB,
 		.playback = {
@@ -5160,6 +5189,20 @@ static struct snd_soc_dai_driver tabla_dai[] = {
 			.formats = TABLA_FORMATS,
 			.rate_min = 8000,
 			.rate_max = 192000,
+			.channels_min = 1,
+			.channels_max = 2,
+		},
+		.ops = &tabla_dai_ops,
+	},
+	{
+		.name = "tabla_tx3",
+		.id = AIF3_CAP,
+		.capture = {
+			.stream_name = "AIF3 Capture",
+			.rates = WCD9310_RATES,
+			.formats = TABLA_FORMATS,
+			.rate_max = 48000,
+			.rate_min = 8000,
 			.channels_min = 1,
 			.channels_max = 2,
 		},
@@ -5711,13 +5754,13 @@ static const struct snd_soc_dapm_widget tabla_dapm_widgets[] = {
 		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
 
 	SND_SOC_DAPM_MIXER("AIF1_CAP Mixer", SND_SOC_NOPM, AIF1_CAP, 0,
-		aif_cap_mixer, ARRAY_SIZE(aif_cap_mixer)),
+		aif1_cap_mixer, ARRAY_SIZE(aif1_cap_mixer)),
 
 	SND_SOC_DAPM_MIXER("AIF2_CAP Mixer", SND_SOC_NOPM, AIF2_CAP, 0,
-		aif_cap_mixer, ARRAY_SIZE(aif_cap_mixer)),
+		aif2_cap_mixer, ARRAY_SIZE(aif2_cap_mixer)),
 
 	SND_SOC_DAPM_MIXER("AIF3_CAP Mixer", SND_SOC_NOPM, AIF3_CAP, 0,
-		aif_cap_mixer, ARRAY_SIZE(aif_cap_mixer)),
+		aif3_cap_mixer, ARRAY_SIZE(aif3_cap_mixer)),
 
 	SND_SOC_DAPM_MUX("SLIM TX1 MUX", SND_SOC_NOPM, TABLA_TX1, 0,
 		&sb_tx1_mux),
@@ -8586,26 +8629,6 @@ static int tabla_handle_pdata(struct tabla_priv *tabla)
 			0xE0, (pdata->ocp.hph_ocp_limit << 5));
 	}
 
-	for (i = 0; i < ARRAY_SIZE(pdata->regulator); i++) {
-		if (!strncmp(pdata->regulator[i].name, "CDC_VDDA_RX", 11)) {
-			if (pdata->regulator[i].min_uV == 1800000 &&
-			    pdata->regulator[i].max_uV == 1800000) {
-				snd_soc_write(codec, TABLA_A_BIAS_REF_CTL,
-					      0x1C);
-			} else if (pdata->regulator[i].min_uV == 2200000 &&
-				   pdata->regulator[i].max_uV == 2200000) {
-				snd_soc_write(codec, TABLA_A_BIAS_REF_CTL,
-					      0x1E);
-			} else {
-				pr_err("%s: unsupported CDC_VDDA_RX voltage "
-				       "min %d, max %d\n", __func__,
-				       pdata->regulator[i].min_uV,
-				       pdata->regulator[i].max_uV);
-				rc = -EINVAL;
-			}
-			break;
-		}
-	}
 done:
 	return rc;
 }
@@ -8807,13 +8830,6 @@ static void tabla_codec_init_reg(struct snd_soc_codec *codec)
 				      tabla_2_higher_codec_reg_init_val[i].mask,
 				      tabla_2_higher_codec_reg_init_val[i].val);
 	}
-	snd_soc_update_bits(codec, TABLA_A_CDC_DMIC_CLK0_MODE, 0x7, 0x4);
-	snd_soc_update_bits(codec, TABLA_A_CDC_DMIC_CLK1_MODE, 0x7, 0x4);
-	snd_soc_update_bits(codec, TABLA_A_CDC_DMIC_CLK2_MODE, 0x7, 0x4);
-	snd_soc_update_bits(codec, TABLA_A_PIN_CTL_OE0, 0x90, 0x90);
-	snd_soc_update_bits(codec, TABLA_A_PIN_CTL_OE1, 0x8, 0x8);
-	snd_soc_update_bits(codec, TABLA_A_PIN_CTL_DATA0, 0x90, 0x0);
-	snd_soc_update_bits(codec, TABLA_A_PIN_CTL_DATA1, 0x8, 0x0);
 }
 
 static void tabla_update_reg_address(struct tabla_priv *priv)
@@ -9283,7 +9299,7 @@ static const struct dev_pm_ops tabla_pm_ops = {
 };
 #endif
 
-static int __devinit tabla_probe(struct platform_device *pdev)
+static int tabla_probe(struct platform_device *pdev)
 {
 	int ret = 0;
 	pr_err("tabla_probe\n");
@@ -9295,7 +9311,7 @@ static int __devinit tabla_probe(struct platform_device *pdev)
 			tabla_i2s_dai, ARRAY_SIZE(tabla_i2s_dai));
 	return ret;
 }
-static int __devexit tabla_remove(struct platform_device *pdev)
+static int tabla_remove(struct platform_device *pdev)
 {
 	snd_soc_unregister_codec(&pdev->dev);
 	return 0;

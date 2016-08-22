@@ -49,9 +49,9 @@
 #define USE_CHANNELS_MAX        2
 /* Support unconventional sample rates 12000, 24000 as well */
 #define USE_RATE                \
-			(SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_KNOT)
+			(SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATE_KNOT)
 #define USE_RATE_MIN            8000
-#define USE_RATE_MAX            48000
+#define USE_RATE_MAX            192000
 #define MAX_BUFFER_PLAYBACK_SIZE \
 				(4800*4)
 /* 2048 frames (Mono), 1024 frames (Stereo) */

@@ -8,6 +8,11 @@
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
+*
+*
+*	 PDesireAudio
+*	 Modified by Tristan Marsell <tristan.marsell@t-online.de>
+*    Increases buffer size on PCM Loopback Audio Module QDSP V1
 */
 
 #include <linux/init.h>
@@ -61,9 +66,10 @@ static const struct snd_pcm_hardware dummy_pcm_hardware = {
 	/* Random values to keep userspace happy when checking constraints */
 	.info                   = SNDRV_PCM_INFO_INTERLEAVED |
 				  SNDRV_PCM_INFO_BLOCK_TRANSFER,
-	.buffer_bytes_max       = 128*1024,
-	.period_bytes_min       = 1024,
-	.period_bytes_max       = 1024*2,
+	/* Increase buffer size from 1024 to 2048 to prevent audio laggs on 192kHz 24bit */
+	.buffer_bytes_max       = 128*2048,
+	.period_bytes_min       = 2048,
+	.period_bytes_max       = 2048*2,
 	.periods_min            = 2,
 	.periods_max            = 128,
 };

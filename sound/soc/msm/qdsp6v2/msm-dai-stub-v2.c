@@ -8,6 +8,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+ *
+ *
+ *	 PDesireAudio
+ *	 Modified by Tristan Marsell <tristan.marsell@t-online.de>
+ *   Enables maximal output (192kHz 24bit) and 24bit audio capture on DAI STUB Audio Module QDSP V2
  */
 #include <linux/init.h>
 #include <linux/module.h>
@@ -31,19 +36,21 @@ static struct snd_soc_dai_ops msm_dai_stub_ops = {
 };
 
 static struct snd_soc_dai_driver msm_dai_stub_dai = {
+	/* Enable Maximum Audio output */
 	.playback = {
-		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+		.rates = SNDRV_PCM_RATE_192000 | SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
 			SNDRV_PCM_RATE_16000,
-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE,
 		.channels_min = 1,
 		.channels_max = 2,
 		.rate_min = 8000,
-		.rate_max = 48000,
+		.rate_max = 192000,
 	},
+	/* Enable 24bit audio capture */
 	.capture = {
 		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
 			SNDRV_PCM_RATE_16000,
-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
 		.channels_min = 1,
 		.channels_max = 2,
 		.rate_min = 8000,

@@ -61,9 +61,9 @@ static const struct snd_pcm_hardware dummy_pcm_hardware = {
 	/* Random values to keep userspace happy when checking constraints */
 	.info                   = SNDRV_PCM_INFO_INTERLEAVED |
 				  SNDRV_PCM_INFO_BLOCK_TRANSFER,
-	.buffer_bytes_max       = 128*1024,
-	.period_bytes_min       = 1024,
-	.period_bytes_max       = 1024*2,
+	.buffer_bytes_max       = 128*2048,
+	.period_bytes_min       = 2048,
+	.period_bytes_max       = 2048*2,
 	.periods_min            = 2,
 	.periods_max            = 128,
 };

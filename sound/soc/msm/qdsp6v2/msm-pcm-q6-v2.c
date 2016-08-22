@@ -8,6 +8,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+ *
+ *
+ *	 PDesireAudio
+ *	 Modified by Tristan Marsell <tristan.marsell@t-online.de>
+ *   Enables maximal output (192kHz 24bit) and 24bit audio capture on PCM Q6 Audio Module QDSP V2
  */
 
 
@@ -58,6 +63,7 @@ struct snd_msm {
 #define CAPTURE_MAX_PERIOD_SIZE     4096
 #define CAPTURE_MIN_PERIOD_SIZE     320
 
+/* Enable 24bit audio capture */
 static struct snd_pcm_hardware msm_pcm_hardware_capture = {
 	.info =                 (SNDRV_PCM_INFO_MMAP |
 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
@@ -80,6 +86,7 @@ static struct snd_pcm_hardware msm_pcm_hardware_capture = {
 	.fifo_size =            0,
 };
 
+/* Enable Maximum Audio output */
 static struct snd_pcm_hardware msm_pcm_hardware_playback = {
 	.info =                 (SNDRV_PCM_INFO_MMAP |
 				SNDRV_PCM_INFO_BLOCK_TRANSFER |

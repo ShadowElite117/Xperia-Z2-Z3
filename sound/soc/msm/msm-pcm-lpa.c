@@ -8,6 +8,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+ *
+ *
+ *	 PDesireAudio
+ *	 Modified by Tristan Marsell <tristan.marsell@t-online.de>
+ *   Increase buffer size and enables maximal output (192kHz 24bit) on 
+ *   LowPowerAudio (LPA) Audio Module QDSP V1
  */
 
 #include <linux/init.h>
@@ -44,22 +50,23 @@ struct snd_msm {
 };
 static struct snd_msm lpa_audio;
 
+/* Enable maximum Audio output */
 static struct snd_pcm_hardware msm_pcm_hardware = {
 	.info =                 (SNDRV_PCM_INFO_MMAP |
 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
 				SNDRV_PCM_INFO_MMAP_VALID |
 				SNDRV_PCM_INFO_INTERLEAVED |
 				SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
-	.formats =              SNDRV_PCM_FMTBIT_S16_LE,
-	.rates =                SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_KNOT,
+	.formats =              SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
+	.rates =                SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATE_KNOT,
 	.rate_min =             8000,
-	.rate_max =             48000,
+	.rate_max =             192000,
 	.channels_min =         1,
 	.channels_max =         2,
-	.buffer_bytes_max =     1024 * 1024,
-/* TODO: Check on the lowest period size we can support */
-	.period_bytes_min =	128 * 1024,
-	.period_bytes_max =     256 * 1024,
+	.buffer_bytes_max =     2048 * 2048,
+/* Increase buffer size to prevent laggs */
+	.period_bytes_min =	128 * 2048,
+	.period_bytes_max =     256 * 2048,
 	.periods_min =          4,
 	.periods_max =          8,
 	.fifo_size =            0,
@@ -67,7 +74,7 @@ static struct snd_pcm_hardware msm_pcm_hardware = {
 
 /* Conventional and unconventional sample rate supported */
 static unsigned int supported_sample_rates[] = {
-	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000
+	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 96000, 192000
 };
 
 static struct snd_pcm_hw_constraint_list constraints_sample_rates = {

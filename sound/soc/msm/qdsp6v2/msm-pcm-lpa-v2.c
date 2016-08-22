@@ -8,6 +8,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+ *
+ *
+ *	 PDesireAudio
+ *	 Modified by Tristan Marsell <tristan.marsell@t-online.de>
+ *   Increased Buffersize and enables maximal output (192kHz 24bit) on LowPowerAudio (LPA) Audio Module QDSP V2
  */
 
 #include <linux/init.h>
@@ -54,6 +59,7 @@ struct snd_msm {
 };
 static struct snd_msm lpa_audio;
 
+/* Enable Maximum Audio output */
 static struct snd_pcm_hardware msm_pcm_hardware = {
 	.info =                 (SNDRV_PCM_INFO_MMAP |
 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
@@ -68,9 +74,10 @@ static struct snd_pcm_hardware msm_pcm_hardware = {
 	.rate_max =             192000,
 	.channels_min =         1,
 	.channels_max =         2,
-	.buffer_bytes_max =     1024 * 1024,
-	.period_bytes_min =	128 * 1024,
-	.period_bytes_max =     256 * 1024,
+	/* Increase Buffersize to prevent laggs */
+	.buffer_bytes_max =     2048 * 2048,
+	.period_bytes_min =	128 * 2048,
+	.period_bytes_max =     256 * 2048,
 	.periods_min =          4,
 	.periods_max =          8,
 	.fifo_size =            0,

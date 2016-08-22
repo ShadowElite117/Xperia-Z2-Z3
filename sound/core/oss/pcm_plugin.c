@@ -18,6 +18,12 @@
  *   License along with this library; if not, write to the Free Software
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
+ *
+ *
+ *	 PDesireAudio
+ *	 Modified by Tristan Marsell <tristan.marsell@t-online.de>
+ *   Enables 24bit upsampling to improve audio output quality
+ *
  */
   
 #if 0
@@ -408,12 +414,17 @@ int snd_pcm_plug_format_plugins(struct snd_pcm_substream *plug,
 		 dstformat.rate,
 		 dstformat.channels);
 
-	/* Format change (linearization) */
+	/* Format change (linearization) 
+	*  First Part of 24bit Audio Upsampling
+	*  The CPU will work normal
+	*  PDesireAudio
+	*/
 	if (! rate_match(srcformat.rate, dstformat.rate) &&
 	    ! snd_pcm_format_linear(srcformat.format)) {
 		if (srcformat.format != SNDRV_PCM_FORMAT_MU_LAW)
 			return -EINVAL;
-		tmpformat.format = SNDRV_PCM_FORMAT_S16;
+		/* If Sound output becomes battery hungry change tmpformat.format to SNDRV_PCM_FORMAT_S16 */
+		tmpformat.format = SNDRV_PCM_FORMAT_S24;
 		err = snd_pcm_plugin_build_mulaw(plug,
 						 &srcformat, &tmpformat,
 						 &plugin);
@@ -444,11 +455,14 @@ int snd_pcm_plug_format_plugins(struct snd_pcm_substream *plug,
 		src_access = dst_access;
 	}
 
-	/* rate resampling */
+	/* rate resampling 
+	*  Enables Resampling when Format IS NOT 24bit to improve a bit the audio output
+	*  PDesireAudio
+	*/
 	if (!rate_match(srcformat.rate, dstformat.rate)) {
-		if (srcformat.format != SNDRV_PCM_FORMAT_S16) {
-			/* convert to S16 for resampling */
-			tmpformat.format = SNDRV_PCM_FORMAT_S16;
+		if (srcformat.format != SNDRV_PCM_FORMAT_S24) {
+			/* If Sound output becomes battery hungry change tmpformat.format to SNDRV_PCM_FORMAT_S16 */
+			tmpformat.format = SNDRV_PCM_FORMAT_24;
 			err = snd_pcm_plugin_build_linear(plug,
 							  &srcformat, &tmpformat,
 							  &plugin);

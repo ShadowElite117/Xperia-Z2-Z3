@@ -17,6 +17,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
+ *
+ *	 PDesireAudio
+ *	 Modified by Tristan Marsell <tristan.marsell@t-online.de>
+ *   Enables the abillity to playback 24 tempoary 32bit (for the samplerate conversion)
+ *
  */
 
 #include <linux/init.h>
@@ -30,8 +35,8 @@
 #include <sound/control.h>
 #include <sound/info.h>
 
-MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>, Abramo Bagnara <abramo@alsa-project.org>");
-MODULE_DESCRIPTION("Midlevel PCM code for ALSA.");
+MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>, Abramo Bagnara <abramo@alsa-project.org>, Tristan Marsell <tristan.marsell@t-online.de>");
+MODULE_DESCRIPTION("Midlevel PCM code for ALSA. (+ PDesireAudio)");
 MODULE_LICENSE("GPL");
 
 static LIST_HEAD(snd_pcm_devices);
@@ -154,7 +159,7 @@ static int snd_pcm_control_ioctl(struct snd_card *card,
 	case SNDRV_CTL_IOCTL_PCM_PREFER_SUBDEVICE:
 		{
 			int val;
-			
+
 			if (get_user(val, (int __user *)arg))
 				return -EFAULT;
 			control->prefer_pcm_subdevice = val;
@@ -229,7 +234,7 @@ EXPORT_SYMBOL_GPL(snd_pcm_format_name);
 #define TSTAMP(v) [SNDRV_PCM_TSTAMP_##v] = #v
 #define ACCESS(v) [SNDRV_PCM_ACCESS_##v] = #v
 #define START(v) [SNDRV_PCM_START_##v] = #v
-#define SUBFORMAT(v) [SNDRV_PCM_SUBFORMAT_##v] = #v 
+#define SUBFORMAT(v) [SNDRV_PCM_SUBFORMAT_##v] = #v
 
 static char *snd_pcm_stream_names[] = {
 	STREAM(PLAYBACK),
@@ -248,7 +253,7 @@ static char *snd_pcm_state_names[] = {
 };
 
 static char *snd_pcm_access_names[] = {
-	ACCESS(MMAP_INTERLEAVED), 
+	ACCESS(MMAP_INTERLEAVED),
 	ACCESS(MMAP_NONINTERLEAVED),
 	ACCESS(MMAP_COMPLEX),
 	ACCESS(RW_INTERLEAVED),
@@ -256,7 +261,7 @@ static char *snd_pcm_access_names[] = {
 };
 
 static char *snd_pcm_subformat_names[] = {
-	SUBFORMAT(STD), 
+	SUBFORMAT(STD),
 };
 
 static char *snd_pcm_tstamp_mode_names[] = {
@@ -315,6 +320,34 @@ static const char *snd_pcm_oss_format_name(int format)
 		return "U16_BE";
 	case AFMT_MPEG:
 		return "MPEG";
+	/* Begin of adding other AFMT Formats 
+	*  This adds 24bit, 32bit and 24bit packed in Little and BIG Endian
+	*/
+	case AFMT_S24_LE
+		return "S24_LE";
+    case AFMT_S24_BE
+		return "S24_BE";
+	case AFMT_U24_LE
+		return "U24_LE";
+	case AFMT_U24_BE
+		return "U24_BE";
+	case AFMT_S32_LE
+		return "S32_LE";
+	case AFMT_S32_BE
+		return "S32_BE";
+	case AFMT_U32_LE
+		return "U32_LE";
+	case AFMT_U32_BE
+		return "U32_BE";
+	case AFMT_S24_3LE
+		return "S24_3LE";
+	case AFMT_S24_3BE
+		return "S24_3BE";
+	case AFMT_U24_3LE
+		return "U24_3LE";
+	case AFMT_U24_3BE
+		return "U24_3BE";
+	/* End of added AFMT formats*/
 	default:
 		return "unknown";
 	}
@@ -388,14 +421,14 @@ static void snd_pcm_substream_proc_hw_params_read(struct snd_info_entry *entry,
 	snd_iprintf(buffer, "access: %s\n", snd_pcm_access_name(runtime->access));
 	snd_iprintf(buffer, "format: %s\n", snd_pcm_format_name(runtime->format));
 	snd_iprintf(buffer, "subformat: %s\n", snd_pcm_subformat_name(runtime->subformat));
-	snd_iprintf(buffer, "channels: %u\n", runtime->channels);	
-	snd_iprintf(buffer, "rate: %u (%u/%u)\n", runtime->rate, runtime->rate_num, runtime->rate_den);	
-	snd_iprintf(buffer, "period_size: %lu\n", runtime->period_size);	
-	snd_iprintf(buffer, "buffer_size: %lu\n", runtime->buffer_size);	
+	snd_iprintf(buffer, "channels: %u\n", runtime->channels);
+	snd_iprintf(buffer, "rate: %u (%u/%u)\n", runtime->rate, runtime->rate_num, runtime->rate_den);
+	snd_iprintf(buffer, "period_size: %lu\n", runtime->period_size);
+	snd_iprintf(buffer, "buffer_size: %lu\n", runtime->buffer_size);
 #if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
 	if (substream->oss.oss) {
 		snd_iprintf(buffer, "OSS format: %s\n", snd_pcm_oss_format_name(runtime->oss.format));
-		snd_iprintf(buffer, "OSS channels: %u\n", runtime->oss.channels);	
+		snd_iprintf(buffer, "OSS channels: %u\n", runtime->oss.channels);
 		snd_iprintf(buffer, "OSS rate: %u\n", runtime->oss.rate);
 		snd_iprintf(buffer, "OSS period bytes: %lu\n", (unsigned long)runtime->oss.period_bytes);
 		snd_iprintf(buffer, "OSS periods: %u\n", runtime->oss.periods);
@@ -494,7 +527,7 @@ static int snd_pcm_stream_proc_init(struct snd_pcm_str *pstr)
 	struct snd_info_entry *entry;
 	char name[16];
 
-	sprintf(name, "pcm%i%c", pcm->device, 
+	sprintf(name, "pcm%i%c", pcm->device,
 		pstr->stream == SNDRV_PCM_STREAM_PLAYBACK ? 'p' : 'c');
 	if ((entry = snd_info_create_card_entry(pcm->card, name, pcm->card->proc_root)) == NULL)
 		return -ENOMEM;
@@ -696,7 +729,7 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
 		prev = substream;
 	}
 	return 0;
-}				
+}
 
 EXPORT_SYMBOL(snd_pcm_new_stream);
 
