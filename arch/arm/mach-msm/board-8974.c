@@ -129,6 +129,7 @@ static struct platform_device lastlogs_device = {
 #define RDTAGS_MEM_SIZE (256 * SZ_1K)
 #define RDTAGS_MEM_DESC_SIZE (256 * SZ_1K)
 #define LAST_LOGS_OFFSET (RDTAGS_MEM_SIZE + RDTAGS_MEM_DESC_SIZE)
+#define MSM_PERSISTENT_RAM_SIZE (SZ_1M)
 
 #ifdef CONFIG_CRASH_LAST_LOGS
 #define LAST_LOG_HEADER_SIZE 4096
