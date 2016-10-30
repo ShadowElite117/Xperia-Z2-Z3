@@ -313,6 +313,33 @@ static const char *snd_pcm_oss_format_name(int format)
 		return "U16_LE";
 	case AFMT_U16_BE:
 		return "U16_BE";
+/* Begin of adding other AFMT Formats 
+	*  This adds 24bit, 32bit and 24bit packed in Little and BIG Endian
+	*/
+#ifdef CONFIG_PDESIREAUDIO 
+	case AFMT_S24_LE
+		return "S24_LE";
+        case AFMT_S24_BE
+		return "S24_BE";
+	case AFMT_U24_LE
+		return "U24_LE";
+	case AFMT_U24_BE
+		return "U24_BE";
+	case AFMT_S32_LE
+		return "S32_LE";
+	case AFMT_S32_BE
+		return "S32_BE";
+	case AFMT_U32_LE
+		return "U32_LE";
+	case AFMT_U32_BE
+		return "U32_BE";
+	case AFMT_S24_3LE
+		return "S24_3LE";
+	case AFMT_S24_3BE
+		return "S24_3BE";
+	case AFMT_U24_3LE
+		return "U24_3LE";
+#endif 
 	case AFMT_MPEG:
 		return "MPEG";
 	default:
