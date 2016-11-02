@@ -404,6 +404,11 @@ void init_sonybundle_params(struct sonybundle_params *sb)
 	/* Initialization of effect having initial value except for 0 */
 	sb->clearphase_hp.mode = CP_MODE_OFF;
 	sb->clearphase_sp.mode = CP_MODE_OFF;
+/* Force ClearPhase on */
+#ifdef CONFIG_PDESIREAUDIO 
+        sb->clearphase_hp.mode = CP_MODE_ON;
+	sb->clearphase_sp.mode = CP_MODE_ON;
+#endif
 	sb->vpt20.mode = VPT_MODE_OFF;
 
 	return;
