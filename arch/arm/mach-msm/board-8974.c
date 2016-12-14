@@ -58,12 +58,8 @@
 #ifdef CONFIG_RAMDUMP_TAGS
 #include "board-rdtags.h"
 #endif
-<<<<<<< HEAD
 
 #include <linux/persistent_ram.h>
-=======
-#include "board-8974-wifi.h"
->>>>>>> 9efef89... shinano: add last_kmsg
 #include "board-8974-console.h"
 
 static struct memtype_reserve msm8974_reserve_table[] __initdata = {
@@ -237,7 +233,7 @@ void __init msm_8974_reserve(void)
 		pr_info("Hardboot page reserved at 0x%X\n", start);
 	else
 		pr_err("Failed to reserve space for hardboot page at 0x%X!\n", start);
-
+#endif
 #ifdef CONFIG_ANDROID_PERSISTENT_RAM
 	reserve_persistent_ram();
 #endif
