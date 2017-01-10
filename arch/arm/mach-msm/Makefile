@@ -457,9 +457,7 @@ CFLAGS_board-rdtags.o  := \
 	-D"INFO_VARIANT= \
         \"$(if $(TARGET_BUILD_VARIANT),$(TARGET_BUILD_VARIANT),unknown)\"" \
 	-D"INFO_BUILDID=\"$(if $(SEMC_SYSTEM_VERSION),$(SEMC_SYSTEM_VERSION),private)\""
-<<<<<<< HEAD
 
 obj-$(CONFIG_THUNDERPLUG_CONTROL) += thunderplug.o
-=======
+
 CFLAGS_board-8974-console.o += -Idrivers/staging/android
->>>>>>> 9a6ac9c... shinano: add last_kmsg
