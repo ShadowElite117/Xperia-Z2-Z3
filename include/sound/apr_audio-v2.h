@@ -5522,6 +5522,8 @@ struct adm_qensemble_param_set_new_angle {
  */
 } __packed;
 
+#define AUDPROC_PARAM_ID_ENABLE					0x00010904
+
 /* end_addtogroup audio_pp_module_ids */
 
 /* @ingroup audio_pp_module_ids

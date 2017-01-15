@@ -16,6 +16,7 @@
 #define ADM_PATH_PLAYBACK 0x1
 #define ADM_PATH_LIVE_REC 0x2
 #define ADM_PATH_NONLIVE_REC 0x3
+#define MAX_COPPS_PER_PORT 0x8
 #include <mach/qdsp6v2/rtac.h>
 #include <sound/q6afe-v2.h>
 #include <sound/q6audio-v2.h>
@@ -23,6 +24,8 @@
 
 /* multiple copp per stream. */
 struct route_payload {
+	unsigned int copp_idx[MAX_COPPS_PER_PORT];
+	unsigned int port_id[MAX_COPPS_PER_PORT];
 	unsigned int copp_ids[AFE_MAX_PORTS];
 	unsigned short num_copps;
 	unsigned int session_id;
@@ -35,9 +38,16 @@ int adm_open(int port, int path, int rate, int mode, int topology,
 
 int adm_get_params(int port_id, uint32_t module_id, uint32_t param_id,
 			uint32_t params_length, char *params);
+			
+int adm_ahc_get_params(int port_id, int copp_idx, uint32_t module_id,
+		       uint32_t param_id, uint32_t params_length, char *params);
+
+int adm_send_params_v5(int port_id, int copp_idx, char *params, uint32_t params_length);
 
 int adm_dolby_dap_send_params(int port_id, char *params,
 				 uint32_t params_length);
+
+int adm_ahc_send_params(int port_id, int ahc_copp_idx, char *params, uint32_t param_id);
 
 int adm_multi_ch_copp_open(int port, int path, int rate, int mode,
 			int topology, int perf_mode, uint16_t bits_per_sample);
