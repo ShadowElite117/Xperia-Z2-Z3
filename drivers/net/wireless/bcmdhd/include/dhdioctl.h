@@ -5,7 +5,7 @@
  *
  * Definitions subject to change without notice.
  *
- * Copyright (C) 1999-2012, Broadcom Corporation
+ * Copyright (C) 1999-2016, Broadcom Corporation
  * 
  *      Unless you and Broadcom execute a separate written software license
  * agreement governing use of this software, this software is licensed to you
@@ -25,18 +25,18 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
- * $Id: dhdioctl.h 327460 2012-04-13 18:38:41Z $
+ * $Id: dhdioctl.h 516345 2014-11-19 11:58:57Z $
  */
 
 #ifndef _dhdioctl_h_
 #define	_dhdioctl_h_
 
-#include <typedefs.h>
+#include "typedefs.h"
 
 
 /* require default structure packing */
 #define BWL_DEFAULT_PACKING
-#include <packed_section_start.h>
+#include "packed_section_start.h"
 
 
 /* Linux network driver ioctl encoding */
@@ -53,7 +53,8 @@ typedef struct dhd_ioctl {
 /* Underlying BUS definition */
 enum {
 	BUS_TYPE_USB = 0, /* for USB dongles */
-	BUS_TYPE_SDIO /* for SDIO dongles */
+	BUS_TYPE_SDIO, /* for SDIO dongles */
+	BUS_TYPE_PCIE /* for PCIE dongles */
 };
 
 /* per-driver magic numbers */
@@ -85,14 +86,14 @@ enum {
 #define DHD_GLOM_VAL	0x0400
 #define DHD_EVENT_VAL	0x0800
 #define DHD_BTA_VAL	0x1000
-#if 0 && (NDISVER >= 0x0630) && 1
-#define DHD_SCAN_VAL	0x2000
-#else
 #define DHD_ISCAN_VAL	0x2000
-#endif
 #define DHD_ARPOE_VAL	0x4000
 #define DHD_REORDER_VAL	0x8000
 #define DHD_WL_VAL		0x10000
+#define DHD_NOCHECKDIED_VAL		0x20000 /* UTF WAR */
+#define DHD_WL_VAL2		0x40000
+#define DHD_PNO_VAL		0x80000
+#define DHD_RTT_VAL		0x100000
 
 #ifdef SDTEST
 /* For pktgen iovar */
@@ -130,6 +131,6 @@ typedef struct dhd_pktgen {
 
 
 /* require default structure packing */
-#include <packed_section_end.h>
+#include "packed_section_end.h"
 
 #endif /* _dhdioctl_h_ */

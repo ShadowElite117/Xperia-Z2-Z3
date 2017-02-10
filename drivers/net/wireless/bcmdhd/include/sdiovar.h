@@ -2,7 +2,7 @@
  * Structure used by apps whose drivers access SDIO drivers.
  * Pulled out separately so dhdu and wlu can both use it.
  *
- * Copyright (C) 1999-2012, Broadcom Corporation
+ * Copyright (C) 1999-2016, Broadcom Corporation
  * 
  *      Unless you and Broadcom execute a separate written software license
  * agreement governing use of this software, this software is licensed to you
@@ -28,11 +28,11 @@
 #ifndef _sdiovar_h_
 #define _sdiovar_h_
 
-#include <typedefs.h>
+#include "typedefs.h"
 
 /* require default structure packing */
 #define BWL_DEFAULT_PACKING
-#include <packed_section_start.h>
+#include "packed_section_start.h"
 
 typedef struct sdreg {
 	int func;
@@ -53,6 +53,6 @@ typedef struct sdreg {
 #define NUM_PREV_TRANSACTIONS	16
 
 
-#include <packed_section_end.h>
+#include "packed_section_end.h"
 
 #endif /* _sdiovar_h_ */

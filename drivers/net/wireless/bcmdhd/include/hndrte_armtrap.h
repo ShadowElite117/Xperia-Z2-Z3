@@ -1,7 +1,7 @@
 /*
  * HNDRTE arm trap handling.
  *
- * Copyright (C) 1999-2012, Broadcom Corporation
+ * Copyright (C) 1999-2016, Broadcom Corporation
  * 
  *      Unless you and Broadcom execute a separate written software license
  * agreement governing use of this software, this software is licensed to you
@@ -58,7 +58,7 @@
 
 #ifndef	_LANGUAGE_ASSEMBLY
 
-#include <typedefs.h>
+#include "typedefs.h"
 
 typedef struct _trap_struct {
 	uint32		type;
