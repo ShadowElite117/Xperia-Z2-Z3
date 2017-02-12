@@ -58,6 +58,9 @@ extern void __flush_dcache_page(struct address_space *mapping, struct page *page
 /* empty mapping */
 #define VM_ARM_EMPTY_MAPPING	0x20000000
 
+/* empty mapping */
+#define VM_ARM_EMPTY_MAPPING	0x20000000
+
 /* mapping type (attributes) for permanent static mappings */
 #define VM_ARM_MTYPE(mt)		((mt) << 20)
 #define VM_ARM_MTYPE_MASK	(0x1f << 20)
