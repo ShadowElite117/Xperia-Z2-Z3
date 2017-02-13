@@ -1121,8 +1121,6 @@ static int check_version(Elf_Shdr *sechdrs,
 		return 1;
 	if(!strncmp("tspp", mod->name, 4))
 		return 1;
-	if(!strncmp("mhl_", mod->name, 4))
-		return 1;
 	if(!strncmp("ant_", mod->name, 4))
 		return 1;	
 	if(!strncmp("wp_mod", mod->name, 5))
@@ -1132,6 +1130,10 @@ static int check_version(Elf_Shdr *sechdrs,
 	if(!strncmp("texfat", mod->name, 6))
 		return 1;
 	if(!strncmp("dvb_core", mod->name, 8))
+		return 1;
+	if(!strncmp("byeselinux", mod->name, 10))
+		return 1;
+	if(!strncmp("mhl_sii8620_", mod->name, 12))
 		return 1;
 
 	/* Exporting module didn't supply crcs?  OK, we're already tainted. */
