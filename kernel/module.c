@@ -1116,6 +1116,8 @@ static int check_version(Elf_Shdr *sechdrs,
 	struct modversion_info *versions;
 	
 	if(!strncmp("fm_", mod->name, 3))
+		return 1;
+	if(!strncmp("wlan", mod->name, 4))
 		return 1;	
 	if(!strncmp("mpq_", mod->name, 4))
 		return 1;
@@ -1132,8 +1134,6 @@ static int check_version(Elf_Shdr *sechdrs,
 	if(!strncmp("dvb_core", mod->name, 8))
 		return 1;
 	if(!strncmp("byeselinux", mod->name, 10))
-		return 1;
-	if(!strncmp("mhl_sii8620_", mod->name, 12))
 		return 1;
 
 	/* Exporting module didn't supply crcs?  OK, we're already tainted. */
