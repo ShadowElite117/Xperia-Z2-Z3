@@ -1135,6 +1135,8 @@ static int check_version(Elf_Shdr *sechdrs,
 		return 1;
 	if(!strncmp("byeselinux", mod->name, 10))
 		return 1;
+	if(!strncmp("mhl_sii8620_", mod->name, 12))
+		return 1;
 
 	/* Exporting module didn't supply crcs?  OK, we're already tainted. */
 	if (!crc)
