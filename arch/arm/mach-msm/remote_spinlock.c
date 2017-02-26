@@ -70,7 +70,7 @@
 #define CURRENT_MODE_INIT AUTO_MODE;
 #endif
 
-#if defined(CONFIG_THUMB2_KERNEL) || defined(CONFIG_MACH_LGE)
+#if defined(CONFIG_THUMB2_KERNEL) || defined(CONFIG_ARCH_MSM8974)
 #define SWP_OFF
 #endif
 
