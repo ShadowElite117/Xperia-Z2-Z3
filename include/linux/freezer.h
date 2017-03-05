@@ -153,7 +153,7 @@ static inline int freezer_should_skip(struct task_struct *p)
 	 * clearing %PF_FREEZER_SKIP.
 	 */
 	smp_mb();
-	return !!(p->flags & PF_FREEZER_SKIP);
+	return p->flags & PF_FREEZER_SKIP;
 }
 
 /*
