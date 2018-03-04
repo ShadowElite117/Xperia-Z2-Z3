@@ -1074,6 +1074,8 @@ static void dwc3_prepare_trbs(struct dwc3_ep *dep, bool starting)
 					break;
 			}
 			dbg_queue(dep->number, &req->request, 0);
+			if (last_one)
+				break;
 		} else {
 			struct dwc3_request	*req1;
 			int maxpkt_size = usb_endpoint_maxp(dep->endpoint.desc);
@@ -1434,6 +1436,14 @@ int __dwc3_gadget_ep_set_halt(struct dwc3_ep *dep, int value, int protocol)
 	memset(&params, 0x00, sizeof(params));
 
 	if (value) {
+		if (!protocol && ((dep->direction && dep->flags & DWC3_EP_BUSY) ||
+				(!list_empty(&dep->req_queued) ||
+				 !list_empty(&dep->request_list)))) {
+			dev_dbg(dwc->dev, "%s: pending request, cannot halt\n",
+					dep->name);
+			return -EAGAIN;
+		}
+
 		ret = dwc3_send_gadget_ep_cmd(dwc, dep->number,
 			DWC3_DEPCMD_SETSTALL, &params);
 		if (ret) {
@@ -1955,8 +1965,8 @@ err1:
 	__dwc3_gadget_ep_disable(dwc->eps[0]);
 
 err0:
-	spin_unlock_irqrestore(&dwc->lock, flags);
 	dwc->gadget_driver = NULL;
+	spin_unlock_irqrestore(&dwc->lock, flags);
 	pm_runtime_put(dwc->dev);
 
 	return ret;
@@ -2020,6 +2030,7 @@ static int __devinit dwc3_gadget_init_endpoints(struct dwc3 *dwc)
 
 		if (epnum == 0 || epnum == 1) {
 			dep->endpoint.maxpacket = 512;
+			dep->endpoint.maxburst = 1;
 			dep->endpoint.ops = &dwc3_gadget_ep0_ops;
 			if (!epnum)
 				dwc->gadget.ep0 = &dep->endpoint;
@@ -2051,8 +2062,6 @@ static void dwc3_gadget_free_endpoints(struct dwc3 *dwc)
 
 	for (epnum = 0; epnum < DWC3_ENDPOINTS_NUM; epnum++) {
 		dep = dwc->eps[epnum];
-		dwc3_free_trb_pool(dep);
-
 		/*
 		 * Physical endpoints 0 and 1 are special; they form the
 		 * bi-directional USB endpoint 0.

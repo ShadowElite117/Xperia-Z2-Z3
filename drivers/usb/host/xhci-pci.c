@@ -101,19 +101,61 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
 	/* AMD PLL quirk */
 	if (pdev->vendor == PCI_VENDOR_ID_AMD && usb_amd_find_chipset_info())
 		xhci->quirks |= XHCI_AMD_PLL_FIX;
+
+
+	if (pdev->vendor == PCI_VENDOR_ID_AMD)
+		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
+
+	if (pdev->vendor == PCI_VENDOR_ID_INTEL)
+		xhci->quirks |= XHCI_AVOID_BEI;
 	if (pdev->vendor == PCI_VENDOR_ID_INTEL &&
 			pdev->device == PCI_DEVICE_ID_INTEL_PANTHERPOINT_XHCI) {
 		xhci->quirks |= XHCI_EP_LIMIT_QUIRK;
 		xhci->limit_active_eps = 64;
 		xhci->quirks |= XHCI_SW_BW_CHECKING;
+		/*
+		 * PPT desktop boards DH77EB and DH77DF will power back on after
+		 * a few seconds of being shutdown.  The fix for this is to
+		 * switch the ports from xHCI to EHCI on shutdown.  We can't use
+		 * DMI information to find those particular boards (since each
+		 * vendor will change the board name), so we have to key off all
+		 * PPT chipsets.
+		 */
+		xhci->quirks |= XHCI_SPURIOUS_REBOOT;
+		xhci->quirks |= XHCI_SPURIOUS_WAKEUP;
+	}
+	if (pdev->vendor == PCI_VENDOR_ID_INTEL &&
+		(pdev->device == PCI_DEVICE_ID_INTEL_SUNRISEPOINT_LP_XHCI ||
+		 pdev->device == PCI_DEVICE_ID_INTEL_SUNRISEPOINT_H_XHCI ||
+		 pdev->device == PCI_DEVICE_ID_INTEL_CHERRYVIEW_XHCI)) {
+		xhci->quirks |= XHCI_PME_STUCK_QUIRK;
 	}
 	if (pdev->vendor == PCI_VENDOR_ID_ETRON &&
 			pdev->device == PCI_DEVICE_ID_ASROCK_P67) {
 		xhci->quirks |= XHCI_RESET_ON_RESUME;
 		xhci_dbg(xhci, "QUIRK: Resetting on resume\n");
+		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
 	}
+	if (pdev->vendor == PCI_VENDOR_ID_RENESAS &&
+			pdev->device == 0x0015)
+		xhci->quirks |= XHCI_RESET_ON_RESUME;
 	if (pdev->vendor == PCI_VENDOR_ID_VIA)
 		xhci->quirks |= XHCI_RESET_ON_RESUME;
+}
+
+/*
+ * Make sure PME works on some Intel xHCI controllers by writing 1 to clear
+ * the Internal PME flag bit in vendor specific PMCTRL register at offset 0x80a4
+ */
+static void xhci_pme_quirk(struct xhci_hcd *xhci)
+{
+	u32 val;
+	void __iomem *reg;
+
+	reg = (void __iomem *) xhci->cap_regs + 0x80a4;
+	val = readl(reg);
+	writel(val | BIT(28), reg);
+	readl(reg);
 }
 
 /* called during probe() after chip reset completes */

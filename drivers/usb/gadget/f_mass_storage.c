@@ -787,6 +787,7 @@ static int sleep_thread(struct fsg_common *common)
 	spin_lock_irq(&common->lock);
 	common->thread_wakeup_needed = 0;
 	spin_unlock_irq(&common->lock);
+	smp_rmb();	/* ensure the latest bh->state is visible */
 	return rc;
 }
 

@@ -3,13 +3,10 @@
    Copyright (c) 2000-2001, 2010-2013 The Linux Foundation. All rights reserved.
    Copyright (C) 2009-2010 Gustavo F. Padovan <gustavo@padovan.org>
    Copyright (C) 2010 Google Inc.
-
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
-
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License version 2 as
    published by the Free Software Foundation;
-
    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS.
@@ -18,7 +15,6 @@
    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
    ALL LIABILITY, INCLUDING LIABILITY FOR INFRINGEMENT OF ANY PATENTS,
    COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS, RELATING TO USE OF THIS
    SOFTWARE IS DISCLAIMED.
@@ -1039,6 +1035,7 @@ static void l2cap_le_conn_ready(struct l2cap_conn *conn)
 	write_lock_bh(&list->lock);
 
 	hci_conn_hold(conn->hcon);
+	conn->hcon->disc_timeout = HCI_DISCONN_TIMEOUT;
 
 	l2cap_sock_init(sk, parent);
 	bacpy(&bt_sk(sk)->src, conn->src);
@@ -1061,12 +1058,11 @@ clean:
 static void l2cap_conn_ready(struct l2cap_conn *conn)
 {
 	struct l2cap_chan_list *l = &conn->chan_list;
-	struct hci_conn *hcon = conn->hcon;
 	struct sock *sk;
 
 	BT_DBG("conn %p", conn);
 
-	if (!hcon->out && hcon->type == LE_LINK)
+	if (!conn->hcon->out && conn->hcon->type == LE_LINK)
 		l2cap_le_conn_ready(conn);
 
 	read_lock(&l->lock);
@@ -1104,7 +1100,7 @@ static void l2cap_conn_ready(struct l2cap_conn *conn)
 	read_unlock(&l->lock);
 
 	if (conn->hcon->out && conn->hcon->type == LE_LINK)
-		smp_conn_security(conn, conn->hcon->pending_sec_level);
+		l2cap_le_conn_ready(conn);
 }
 
 /* Notify sockets that we cannot guaranty reliability anymore */
@@ -2830,6 +2826,9 @@ static struct sk_buff *l2cap_build_cmd(struct l2cap_conn *conn,
 
 	BT_DBG("conn %p, code 0x%2.2x, ident 0x%2.2x, len %d",
 			conn, code, ident, dlen);
+
+	if (conn->mtu < L2CAP_HDR_SIZE + L2CAP_CMD_HDR_SIZE)
+		return NULL;
 
 	len = L2CAP_HDR_SIZE + L2CAP_CMD_HDR_SIZE + dlen;
 	count = min_t(unsigned int, mtu, len);

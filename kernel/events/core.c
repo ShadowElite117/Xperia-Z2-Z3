@@ -1270,7 +1270,7 @@ static void __ref perf_remove_from_context(struct perf_event *event, bool detach
 	struct perf_event_context *ctx = event->ctx;
 	struct task_struct *task = ctx->task;
 	int ret;
-		struct remove_event re = {
+	struct remove_event re = {
 		.event = event,
 		.detach_group = detach_group,
 	};
@@ -1289,7 +1289,7 @@ static void __ref perf_remove_from_context(struct perf_event *event, bool detach
 	}
 
 retry:
-	if (!task_function_call(task, __perf_remove_from_context, event))
+	if (!task_function_call(task, __perf_remove_from_context, &re))
 		return;
 
 	raw_spin_lock_irq(&ctx->lock);
@@ -3035,6 +3035,9 @@ static void put_event(struct perf_event *event)
 	if ((event->state == PERF_EVENT_STATE_OFF) &&
 	    event->attr.constraint_duplicate)
 		event->state = PERF_EVENT_STATE_ACTIVE;
+
+	if (!atomic_long_dec_and_test(&event->refcount))
+		return;
 
 	rcu_read_lock();
 	owner = ACCESS_ONCE(event->owner);

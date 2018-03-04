@@ -694,7 +694,7 @@ ENTRY(no_fp)
 	mov	pc, lr
 ENDPROC(no_fp)
 
-	__und_usr_fault_32:
+__und_usr_fault_32:
 	mov	r1, #4
 	b	1f
 __und_usr_fault_16:
