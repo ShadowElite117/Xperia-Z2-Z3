@@ -287,13 +287,6 @@ int security_sb_statfs(struct dentry *dentry)
 int security_sb_mount(char *dev_name, struct path *path,
                        char *type, unsigned long flags, void *data)
 {
-#if defined(CONFIG_SECURITY_SONY_RIC) && !defined(CONFIG_DEFAULT_SECURITY_SONY)
-	int ret;
-
-	ret = sony_ric_mount(dev_name, path, type, flags, data);
-	if (ret)
-		return ret;
-#endif
 	return security_ops->sb_mount(dev_name, path, type, flags, data);
 }
 
