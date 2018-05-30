@@ -107,12 +107,20 @@ arch/arm/boot/Image
 arch/arm/boot/compressed/vmlinux
 arch/arm/boot/zImage
 
-arch/sirius_defconfig
 build_it4_all
 build_it4_leo
 build_it4_sirius
 log.log
 logM.log
+arch/arm/boot/compressed/ashldi3.S
+arch/arm/boot/compressed/lib1funcs.S
+arch/arm/boot/compressed/vmlinux.lds
+arch/arm/kernel/vmlinux.lds
+drivers/tty/vt/consolemap_deftbl.c
+drivers/tty/vt/defkeymap.c
+kernel/timeconst.h
+lib/crc32table.h
+lib/gen_crc32table
 scripts/basic/fixdep
 scripts/bin2c
 scripts/conmakehash
