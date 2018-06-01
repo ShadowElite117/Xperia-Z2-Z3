@@ -28,10 +28,37 @@
 #include <linux/sysfs.h>
 #include <linux/fastchg.h>
 
-#define FAST_CHARGE_VERSION	"version 1.0 by Paul Reioux"
+/* Credits / Changelog:
+ * version 1.0 Initial build by Paul Reioux
+ * version 1.1 Added 1800ma limit to table by Dorimanx
+ * version 1.2 Added Fake AC interface by Mankindtw@xda and Dorimanx 
+ * (update 22/10/14 mod deleted, it's bugged and useless)
+ * version 1.3 Misc fixes to force AC and allowed real 1800mA max.
+ *
+ * Next versions depend on code for LG G2 Device!!! (Dorimanx)
+ * version 1.4 Added usage of custom mA value for max charging power,
+ * Now we can use Intelli Thermal and get full power charge, this was controlled by
+ * default ROM thermal engine, not any more, code will check if battery if not above 50c
+ * and allow max charge!
+ * version 1.5/6/7/8 trying to perfect fast charge auto on/off and auto tune based on connection type
+ * and battery heat.
+ * version 1.9 Added Auto fast charge on/off based on battery %, if above 95% then fast charge is OFF
+ * when battery is below 95% and fast charge was ON by user before, then it's enabled again.
+ * version 2.0 Guard with mutex all functions that use values from other code to prevent race and bug.
+ * version 2.1 Corect Mutex guards in code for fastcharge.
+ * version 2.2 allow to charge on 900ma lock.
+ * version 2.3 added more checks to thermal mitigation functions and corrected code style.
+ * removed updating charging scenario when no charger connected. no point to do so.
+ * version 2.4 allowed full 2000ma to be set in charger driver.
+ * version 2.5 fixed broken mitigation set if USB is connected.
+ */
+
+#define FAST_CHARGE_VERSION	"Version 2.5"
 
 int force_fast_charge;
-int fast_charge_level = FAST_CHARGE_1200;
+int force_fast_charge_temp;
+int fast_charge_level;
+int force_fast_charge_on_off;
 
 /* sysfs interface for "force_fast_charge" */
 static ssize_t force_fast_charge_show(struct kobject *kobj,
@@ -54,6 +81,8 @@ static ssize_t force_fast_charge_store(struct kobject *kobj,
 		case FAST_CHARGE_FORCE_AC:
 		case FAST_CHARGE_FORCE_CUSTOM_MA:
 			force_fast_charge = new_force_fast_charge;
+			force_fast_charge_temp = new_force_fast_charge;
+			force_fast_charge_on_off = new_force_fast_charge;
 			return count;
 		default:
 			return -EINVAL;
@@ -76,12 +105,13 @@ static ssize_t charge_level_store(struct kobject *kobj,
 	sscanf(buf, "%du", &new_charge_level);
 
 	switch (new_charge_level) {
+		case FAST_CHARGE_300:
 		case FAST_CHARGE_500:
 		case FAST_CHARGE_900:
 		case FAST_CHARGE_1200:
-		case FAST_CHARGE_1500:
+		case FAST_CHARGE_1600:
+		case FAST_CHARGE_1800:
 		case FAST_CHARGE_2000:
-		case FAST_CHARGE_2200:
 			fast_charge_level = new_charge_level;
 			return count;
 		default:
@@ -142,6 +172,9 @@ int force_fast_charge_init(void)
 
 	 /* Forced fast charge disabled by default */
 	force_fast_charge = FAST_CHARGE_DISABLED;
+	force_fast_charge_temp = FAST_CHARGE_DISABLED;
+	force_fast_charge_on_off = FAST_CHARGE_DISABLED;
+	fast_charge_level = FAST_CHARGE_1600;
 
 	force_fast_charge_kobj
 		= kobject_create_and_add("fast_charge", kernel_kobj);
@@ -174,4 +207,5 @@ module_exit(force_fast_charge_exit);
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Jean-Pierre Rasquin <yank555.lu@gmail.com>");
 MODULE_AUTHOR("Paul Reioux <reioux@gmail.com>");
+MODULE_AUTHOR("Yuri Sh. <yuri@bynet.co.il>");
 MODULE_DESCRIPTION("Fast Charge Hack for Android");
