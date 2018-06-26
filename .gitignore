@@ -108,6 +108,7 @@ arch/arm/boot/compressed/vmlinux
 arch/arm/boot/zImage
 
 build_it4_all
+build_it4_aries
 build_it4_leo
 build_it4_sirius
 log.log
