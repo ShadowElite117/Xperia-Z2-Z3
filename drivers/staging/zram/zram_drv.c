@@ -367,7 +367,7 @@ static int zram_bvec_read(struct zram *zram, struct bio_vec *bvec,
 	}
 
 	if (is_partial_io(bvec))
-		/* Use  a temporary buffer to decompress the page */
+		/* Use a temporary buffer to decompress the page */
 		uncmem = kmalloc(PAGE_SIZE, GFP_NOIO);
 
 	user_mem = kmap_atomic(page);
@@ -863,7 +863,7 @@ static int create_device(struct zram *zram, int device_id)
 	blk_queue_make_request(zram->queue, zram_make_request);
 	zram->queue->queuedata = zram;
 
-	 /* gendisk structure */
+	/* gendisk structure */
 	zram->disk = alloc_disk(1);
 	if (!zram->disk) {
 		pr_warn("Error allocating disk structure for device %d\n",

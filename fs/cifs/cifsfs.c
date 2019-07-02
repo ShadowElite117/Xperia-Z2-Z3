@@ -90,6 +90,7 @@ extern mempool_t *cifs_req_poolp;
 extern mempool_t *cifs_mid_poolp;
 
 struct workqueue_struct	*cifsiod_wq;
+
 /*
  * Bumps refcount for cifs super block.
  * Note that it should be only called if a referece to VFS super block is
