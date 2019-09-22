@@ -193,7 +193,7 @@ static unsigned long highmem_dirtyable_memory(unsigned long total)
 	 * Unreclaimable memory (kernel memory or anonymous memory
 	 * without swap) can bring down the dirtyable pages below
 	 * the zone's dirty balance reserve and the above calculation
-	 * will underflow.  However we still want to add in nodes
+	 * will underflow. However we still want to add in nodes
 	 * which are below threshold (negative values) to get a more
 	 * accurate calculation but make sure that the total never
 	 * underflows.
