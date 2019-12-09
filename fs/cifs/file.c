@@ -270,6 +270,8 @@ cifs_new_fileinfo(__u16 fileHandle, struct file *file,
 	INIT_WORK(&pCifsFile->oplock_break, cifs_oplock_break);
 	cifs_sb_active(inode->i_sb);
 
+	cifs_sb_active(inode->i_sb);
+
 	spin_lock(&cifs_file_list_lock);
 	list_add(&pCifsFile->tlist, &(tlink_tcon(tlink)->openFileList));
 	/* if readable file instance put first in list*/
@@ -889,7 +891,7 @@ cifs_push_mandatory_locks(struct cifsFileInfo *cfile)
 	if (!buf) {
 		mutex_unlock(&cinode->lock_mutex);
 		FreeXid(xid);
-		return rc;
+		return -ENOMEM;
 	}
 
 	for (i = 0; i < 2; i++) {
